@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "BeliBijak",
+    "slug": "BeliBijak",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/belibijakicon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "scheme": "belibijak",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.belibijak"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/belibijakicon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.belibijak"
+    },
+    "web": {
+      "favicon": "./assets/belibijakicon.png"
+    },
+    "plugins": [
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/belibijakicon.png"
+        }
+      ],
+      "react-native-edge-to-edge"
+    ]
+  }
+}
