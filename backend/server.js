@@ -3,7 +3,7 @@ import cors from "cors";
 import admin from "firebase-admin";
 import bodyParser from "body-parser";
 import fs from "fs";
-const serviceAccount = JSON.parse(fs.readFileSync(new URL("./serviceAccountKey.json", import.meta.url)));
+const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
 
 // initializing database app
 admin.initializeApp({
