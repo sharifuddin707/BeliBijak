@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import admin from "firebase-admin";
 import bodyParser from "body-parser";
-import fs from "fs";
 const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
 
 // initializing database app
