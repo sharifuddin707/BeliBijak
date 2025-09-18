@@ -1,39 +1,53 @@
-# BeliBijak Backend
+# BeliBijak App in Development
 
-## Overview
-BeliBijak is a backend application built using Node.js and Express. It serves as the server-side component for managing user and store data, utilizing Firebase Firestore for data storage.
+This is an app that will use a navigation starter template for React Native apps using Expo and React Navigation. It is still in development
 
-## Project Structure
-```
-backend
-├── server.js               # Initializes the Express server and defines API routes
-├── package.json            # npm configuration file with dependencies and scripts
-├── serviceAccountKey.json  # Firebase service account credentials
-└── README.md               # Documentation for the project
-```
+## App Architecture
 
-## Setup Instructions
+ - React Native Frontend + Express Backend + NodeJs + Cloud Firebase Database
 
-1. **Clone the repository**
-   ```
-   git clone <repository-url>
-   cd BeliBijak/backend
-   ```
+ NOTE IMPORTANT!!!: If you did not see any displayed data in the Home screen, it means the backend is not on. Start the Backend Server first, follow the ## Running the app.
 
-2. **Install dependencies**
-   Ensure you have Node.js installed, then run:
-   ```
-   npm install
-   ```
+## Update from previous Assignment 2
 
-3. **Configure Firebase**
-   - Obtain your Firebase service account key and save it as `serviceAccountKey.json` in the backend directory.
+ - I moved the Profile and Setting buttons to the navigation tabs
+ - Connected the Frontend React Native app to the express backend which will handle all the requests
+ - Connected my backend to my Cloud Firebase Database. (So my app will need internet connection to retrieved the data)
+ - Added CRUD so I can alter the data from the Firebase Database via the express backend requests
+ - Frontend will be using port [localhost:8081](http://localhost:8081/)
+ - Express backend will be using port [localhost:3000](http://localhost:3000/stores)
+ - Added CORS to handle the permission errors from the browser when retrieving data from database
 
-4. **Run the server**
-   ```
-   node server.js
-   ```
-   The server will start on port 3000.
+## Running the app
+
+- Step 1: Install the dependencies:
+
+  ```
+  npm install
+  ```
+
+- Step 2: Start the backend server:
+
+  ```
+  node .\backend\server.js
+  ``
+
+- Step 3: In another terminal, Start the Frontend React app:
+
+  ```
+  (in another terminal)
+  npm start
+  ```
+
+- Build and run iOS and Android development builds:
+
+  ```
+  npm run ios
+  # or
+  npm run android
+  ```
+
+- In the terminal running the development server, press `i` to open the iOS simulator, `a` to open the Android device or emulator, or `w` to open the web browser.
 
 ## API Endpoints
 
@@ -47,5 +61,9 @@ backend
 - **PUT /stores/:id**: Update the name of a grocery store by ID.
 - **DELETE /stores/:id**: Delete a grocery store by ID.
 
-## License
-This project is licensed under the MIT License.
+## Resources
+
+- [React Navigation documentation](https://reactnavigation.org/)
+- [Expo documentation](https://docs.expo.dev/)
+- [React Native Starter template]{https://reactnative.dev/docs/navigation#react-navigation}
+
