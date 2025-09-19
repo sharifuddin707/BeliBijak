@@ -1,5 +1,5 @@
 // Change this to your computer's local IP address if running on a device
-const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'https://belibijak-1.onrender.com';
 
 import { Button, Text } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';

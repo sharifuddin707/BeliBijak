@@ -2,7 +2,13 @@ import express from "express";
 import cors from "cors";
 import admin from "firebase-admin";
 import bodyParser from "body-parser";
-const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+
+// Fetch the service account key JSON file contents from environment variable in Render
+const key = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+if (!key) {
+  throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY environment variable is not set');
+}
+const serviceAccount = JSON.parse(key);
 
 // initializing database app
 admin.initializeApp({
