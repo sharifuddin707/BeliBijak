@@ -21,7 +21,7 @@ This is an app that will use a navigation starter template for React Native apps
  - Added CORS to handle the permission errors from the browser when retrieving data from database
  - Added a Dark Mode feature in the settings
 
-## Running the app
+## Running the app (in Render Environment)
 
 - Step 1: Install the dependencies:
 
@@ -51,6 +51,8 @@ This is an app that will use a navigation starter template for React Native apps
   ```
 
 - In the terminal running the development server, press `i` to open the iOS simulator, `a` to open the Android device or emulator, or `w` to open the web browser.
+
+Important Note: The code is build to suit Render's environment so it will not work on localhost. I also did not provided the content of GOOGLE_SERVICE_ACCOUNT_KEY as it contains the private key and sensitive credential of my Cloud Database Firebase
 
 ## API Endpoints
 
