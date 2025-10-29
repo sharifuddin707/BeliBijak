@@ -8,6 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 const BACKEND_URL = 'https://belibijak-1.onrender.com';
 
 export function AI() {
+  const { isDark } = React.useContext(require('../../contexts').ThemeContext as React.Context<{ isDark: boolean; toggleTheme: () => void }>);
   const [itemName, setItemName] = React.useState('');
   const [price, setPrice] = React.useState('');
   const [stores, setStores] = React.useState<{id: string, name: string}[]>([]);
@@ -52,51 +53,54 @@ export function AI() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>Price Insight (AI)</Text>
-      <TextInput
-        style={styles.input}
-        placeholder='Item name (e.g., Apple)'
-        value={itemName}
-        onChangeText={setItemName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder='Current price (optional)'
-        value={price}
-        onChangeText={setPrice}
-        keyboardType='numeric'
-      />
-      {/* store picker - fallback to simple TextInput for platforms without Picker */}
-      {stores.length > 0 ? (
-        <Picker
-          selectedValue={selectedStore}
-          onValueChange={(val: string | null) => setSelectedStore(val)}
-          style={{ width: 220 }}
-        >
-          <Picker.Item label='(Select store - optional)' value={null} />
-          {stores.map(s => (
-            <Picker.Item key={s.id} label={s.name} value={s.id} />
-          ))}
-        </Picker>
-      ) : (
-        <Text>(No stores found)</Text>
-      )}
-
-      <Button onPress={handleGetInsight}>Get Insight</Button>
-
-      {loading && <ActivityIndicator style={{ marginTop: 12 }} />}
+  <View style={[styles.container, { backgroundColor: isDark ? '#181A20' : '#F7F9FC' }] }>
+  <Text style={[styles.header, { color: isDark ? '#90CAF9' : '#4F8EF7' }]}>🧠 Price Insight (AI)</Text>
+  <View style={[styles.section, { backgroundColor: isDark ? '#23272F' : '#fff', borderColor: isDark ? '#333' : '#e0e0e0' }] }>
+        <Text style={styles.sectionTitle}>Enter Item Details</Text>
+        <TextInput
+    style={[styles.input, { backgroundColor: isDark ? '#23272F' : '#F3F6FA', color: isDark ? '#fff' : '#222', borderColor: isDark ? '#444' : '#d0d7de' }]}
+    placeholder='Item name (e.g., Apple)'
+    placeholderTextColor={isDark ? '#aaa' : '#888'}
+    value={itemName}
+    onChangeText={setItemName}
+        />
+        <TextInput
+    style={[styles.input, { backgroundColor: isDark ? '#23272F' : '#F3F6FA', color: isDark ? '#fff' : '#222', borderColor: isDark ? '#444' : '#d0d7de' }]}
+    placeholder='Current price (optional)'
+    placeholderTextColor={isDark ? '#aaa' : '#888'}
+    value={price}
+    onChangeText={setPrice}
+    keyboardType='numeric'
+        />
+        {stores.length > 0 ? (
+          <Picker
+            selectedValue={selectedStore}
+            onValueChange={(val: string | null) => setSelectedStore(val)}
+            style={[styles.picker, { backgroundColor: isDark ? '#23272F' : '#F3F6FA', color: isDark ? '#fff' : '#222', borderColor: isDark ? '#444' : '#d0d7de' }]}
+          >
+            <Picker.Item label='(Select store - optional)' value={null} />
+            {stores.map(s => (
+              <Picker.Item key={s.id} label={s.name} value={s.id} />
+            ))}
+          </Picker>
+        ) : (
+          <Text style={[styles.noStores, { color: isDark ? '#aaa' : '#888' }]}>(No stores found)</Text>
+        )}
+  <Button onPress={handleGetInsight} title="Get Insight" color={isDark ? '#90CAF9' : '#4F8EF7'}> Get Insight</Button>
+        {loading && <ActivityIndicator style={{ marginTop: 12 }} />}
+      </View>
 
       {result && (
-        <View style={{ marginTop: 12, padding: 10 }}>
-          {result.error && <Text>Error: {String(result.error)}</Text>}
+        <View style={[styles.resultCard, { backgroundColor: isDark ? '#23272F' : '#fff', borderColor: isDark ? '#333' : '#e0e0e0' }] }>
+          <Text style={[styles.resultTitle, { color: isDark ? '#90CAF9' : '#4F8EF7' }]}>Result</Text>
+          {result.error && <Text style={[styles.errorText, { color: isDark ? '#EF9A9A' : '#D32F2F' }]}>Error: {String(result.error)}</Text>}
           {!result.error && (
             <>
-              <Text>Recommendation: {String(result.recommendation)}</Text>
-              <Text>Score: {String(result.score)}</Text>
-              {result.expectedPrice != null && <Text>Expected price: {String(result.expectedPrice)}</Text>}
-              {result.suggestedStore && <Text>Suggested store: {String(result.suggestedStore.storeId || result.suggestedStore.id)} (avg: {String(result.suggestedStore.avgPrice || result.suggestedStore.estimatedPrice)})</Text>}
-              <Text>{result.message}</Text>
+              <Text style={[styles.resultText, { color: isDark ? '#fff' : '#222' }]}>Recommendation: <Text style={styles.bold}>{String(result.recommendation)}</Text></Text>
+              <Text style={[styles.resultText, { color: isDark ? '#fff' : '#222' }]}>Score: <Text style={styles.bold}>{String(result.score)}</Text></Text>
+              {result.expectedPrice != null && <Text style={[styles.resultText, { color: isDark ? '#fff' : '#222' }]}>Expected price: <Text style={styles.bold}>{String(result.expectedPrice)}</Text></Text>}
+              {result.suggestedStore && <Text style={[styles.resultText, { color: isDark ? '#fff' : '#222' }]}>Suggested store: <Text style={styles.bold}>{String(result.suggestedStore.storeId || result.suggestedStore.id)}</Text> (avg: <Text style={styles.bold}>{String(result.suggestedStore.avgPrice || result.suggestedStore.estimatedPrice)}</Text>)</Text>}
+              <Text style={[styles.resultText, { color: isDark ? '#fff' : '#222' }]}>{result.message}</Text>
             </>
           )}
         </View>
@@ -108,18 +112,86 @@ export function AI() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    gap: 10,
+    paddingTop: 32,
+    backgroundColor: '#F7F9FC',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 18,
+    color: '#4F8EF7',
+  },
+  section: {
+    width: 280,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 18,
+    marginBottom: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 10,
+    color: '#333',
   },
   input: {
-    width: 220,
+    width: '100%',
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#d0d7de',
     borderWidth: 1,
     paddingHorizontal: 10,
-    marginBottom: 8,
-    borderRadius: 5,
+    marginBottom: 10,
+    borderRadius: 7,
+    backgroundColor: '#F3F6FA',
+    fontSize: 15,
+  },
+  picker: {
+    width: '100%',
+    marginBottom: 10,
+    backgroundColor: '#F3F6FA',
+    borderRadius: 7,
+  },
+  noStores: {
+    color: '#888',
+    marginBottom: 10,
+  },
+  resultCard: {
+    width: 280,
     backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  resultTitle: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#4F8EF7',
+  },
+  resultText: {
+    fontSize: 15,
+    marginBottom: 4,
+    color: '#222',
+  },
+  errorText: {
+    color: '#D32F2F',
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
+  bold: {
+    fontWeight: 'bold',
+    color: '#222',
   },
 });
