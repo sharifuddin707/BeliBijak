@@ -29,6 +29,32 @@ const port = 3000;
 
 app.use(bodyParser.json()); // parse json files
 
+// Try to load TFJS model if available. Use dynamic import so app still runs if dependency missing.
+let model = null;
+let modelMetadata = null;
+try {
+  const tf = await import('@tensorflow/tfjs-node');
+  try {
+    // model saved at ./ml/model
+    const modelPath = 'file://./ml/model';
+    model = await tf.loadLayersModel(modelPath + '/model.json');
+    // attempt to read metadata
+    try {
+      const meta = await import('fs/promises');
+      const md = JSON.parse(await meta.readFile('./ml/metadata.json', 'utf8'));
+      modelMetadata = md;
+      console.log('Loaded TFJS model with metadata', md);
+    } catch (err) {
+      console.warn('Model loaded but metadata not found');
+    }
+  } catch (err) {
+    console.log('No TFJS model found or failed to load, continuing with heuristic.');
+    model = null;
+  }
+} catch (err) {
+  console.log('@tensorflow/tfjs-node not installed or failed to import — model inference disabled.');
+}
+
 // handle user get requests
 app.get('/users', async (req, res) => {
   console.log('GET /users');
@@ -108,6 +134,90 @@ app.delete('/stores/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log("problem deleting store");
+  }
+});
+
+// ML heuristic endpoint: price insight
+app.post('/ml/price_insight', async (req, res) => {
+  try {
+    const { itemName, currentPrice, storeId } = req.body || {};
+    if (!itemName) return res.status(400).json({ error: 'itemName is required' });
+    // If a model is loaded, use it for prediction
+    if (model && modelMetadata) {
+      try {
+        // construct feature vector using metadata
+        const { items = [], stores = [], numItems = 0 } = modelMetadata;
+        const feat = new Array(modelMetadata.featureLen).fill(0);
+        const itIdx = items.indexOf(itemName);
+        if (itIdx >= 0) feat[itIdx] = 1;
+        const stIdx = storeId ? stores.indexOf(storeId) : -1;
+        if (stIdx >= 0) feat[numItems + stIdx] = 1;
+        const tf = await import('@tensorflow/tfjs-node');
+        const x = tf.tensor2d([feat]);
+        const pred = model.predict(x);
+        const predVal = Array.isArray(pred.dataSync) ? pred.dataSync()[0] : pred.dataSync()[0];
+        x.dispose();
+        return res.json({ recommendation: 'model_price', predictedPrice: predVal, message: 'Predicted price from model' });
+      } catch (err) {
+        console.error('Model prediction failed', err);
+        // fall through to heuristic
+      }
+    }
+
+    // Look for a 'prices' collection with documents: { itemName, storeId, price }
+    const pricesSnap = await db.collection('prices').where('itemName', '==', itemName).get();
+    if (pricesSnap.empty) {
+      return res.json({
+        recommendation: 'no_data',
+        score: 0,
+        message: `No historical price data found for ${itemName}`
+      });
+    }
+
+    // Aggregate average price per store
+    const storeTotals = {};
+    pricesSnap.docs.forEach(doc => {
+      const d = doc.data();
+      const s = d.storeId || 'unknown';
+      const p = Number(d.price) || 0;
+      if (!storeTotals[s]) storeTotals[s] = { sum: 0, count: 0 };
+      storeTotals[s].sum += p;
+      storeTotals[s].count += 1;
+    });
+
+    const storeAvgs = Object.entries(storeTotals).map(([s, v]) => ({ storeId: s, avgPrice: v.sum / v.count }));
+    // Find overall lowest average
+    storeAvgs.sort((a, b) => a.avgPrice - b.avgPrice);
+    const cheapest = storeAvgs[0];
+
+    // If user provided currentPrice and storeId, compare
+    if (currentPrice && storeId) {
+      const expected = storeAvgs.find(s => s.storeId === storeId)?.avgPrice;
+      const diff = expected ? (currentPrice - expected) / expected : null;
+      let recommendation = 'fair_price';
+      if (diff !== null) {
+        if (diff > 0.2) recommendation = 'expensive';
+        else if (diff < -0.15) recommendation = 'cheaper_here';
+      }
+      return res.json({
+        recommendation,
+        score: diff === null ? 0 : Math.min(1, Math.abs(diff)),
+        expectedPrice: expected || null,
+        suggestedStore: cheapest,
+        message: `Compared ${storeId} price to historical averages for ${itemName}`
+      });
+    }
+
+    // If no current price, just suggest the cheapest store from history
+    return res.json({
+      recommendation: 'cheaper_store',
+      score: 0.9,
+      suggestedStore: cheapest,
+      message: `Based on historical prices, ${cheapest.storeId} has the lowest average price for ${itemName}`
+    });
+  } catch (err) {
+    console.error('ML endpoint error', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

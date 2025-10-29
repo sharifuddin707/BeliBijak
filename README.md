@@ -39,7 +39,7 @@ This is an app that will use a navigation starter template for React Native apps
 
   ```
   (in another terminal)
-  npm start
+  npm start --legacy-peer-deps
   ```
 
 - Build and run iOS and Android development builds:

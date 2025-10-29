@@ -7,8 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme, View, Text } from 'react-native';
 import { Navigation } from './navigation';
 import * as React from 'react';
-import { NameContext } from './navigation/screens/Home';
-
+import { ThemeContext, NameContext } from './contexts';
 Asset.loadAsync([
   ...NavigationAssets,
   require('./assets/newspaper.png'),
@@ -18,11 +17,6 @@ Asset.loadAsync([
 SplashScreen.preventAutoHideAsync();
 
 const prefix = createURL('/');
-
-export const ThemeContext = React.createContext({
-  isDark: false,
-  toggleTheme: () => {},
-});
 
 export function App() {
   const [isDark, setIsDark] = React.useState(false);

@@ -6,32 +6,15 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, TextInput, Alert, Switch } from 'react-native';
 import * as React from 'react';
 
-// Context to share name across screens
-export const NameContext = React.createContext({ name: '', setName: (n: string) => {} });
-
 export function Home() {
-  // State for user name
-  const [nameInput, setNameInput] = React.useState('');
   // State for grocery store name
   const [storeInput, setStoreInput] = React.useState('');
   // State for list of grocery stores (now with id and name)
   const [stores, setStores] = React.useState<{id: string, name: string}[]>([]);
   // State for selected store for update/delete
   const [selectedStore, setSelectedStore] = React.useState<{id: string, name: string} | null>(null);
-  // Context for sharing name
-  const { name, setName } = React.useContext(NameContext);
   // Navigation
   const navigation = useNavigation();
-
-  // Save user name and make available for Profile
-  const handleSaveName = () => {
-    if (!nameInput) {
-      Alert.alert('Please enter your name');
-      return;
-    }
-    setName(nameInput);
-    Alert.alert('Name saved!');
-  };
 
   // Add grocery store
   const handleAddStore = async () => {
@@ -134,16 +117,7 @@ export function Home() {
   console.log('stores:', stores);
   return (
     <View style={styles.container}>
-      <Text>Who are you? see the changes in Profile tab</Text>
-      {/* User name input */}
-      <TextInput
-        style={styles.input}
-        placeholder='Enter your name...'
-        value={nameInput}
-        onChangeText={setNameInput}
-      />
-      <Button onPress={handleSaveName}>Save my Name</Button>
-
+      <Text>Welcome to BeliBijak!</Text>
       {/* Grocery store name input */}
       <Text>{"\n"}Enter Grocery Store names:</Text>
       <TextInput
