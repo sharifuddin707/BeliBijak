@@ -29,25 +29,14 @@ This is an app that will use a navigation starter template for React Native apps
   npm install
   ```
 
-- Step 2: Start the backend server:
-
-  ```
-  node .\backend\server.js
-  ``
-
-- Step 3: In another terminal, Start the Frontend React app:
-
-  ```
-  (in another terminal)
-  npm start --legacy-peer-deps
+  ``` if peer issues
+  npm install --legacy-peer-deps
   ```
 
-- Build and run iOS and Android development builds:
+- Step 2: Start the project:
 
   ```
-  npm run ios
-  # or
-  npm run android
+  npm start
   ```
 
 - In the terminal running the development server, press `i` to open the iOS simulator, `a` to open the Android device or emulator, or `w` to open the web browser.
