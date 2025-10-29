@@ -1,44 +1,47 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HeaderButton, Text } from '@react-navigation/elements';
-import {
-  createStaticNavigation,
-  StaticParamList,
-} from '@react-navigation/native';
+import { createStaticNavigation, StaticParamList } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image } from 'react-native';
-import bell from '../assets/bell.png';
-import newspaper from '../assets/newspaper.png';
+import { Ionicons } from '@expo/vector-icons';
 import { Home } from './screens/Home';
 import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
-import { Updates } from './screens/Updates';
+import { AI } from './screens/AI';
 import { NotFound } from './screens/NotFound';
+import React from 'react';
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
     Home: {
       screen: Home,
       options: {
-        title: 'BeliBijak Home Screen',
-        tabBarIcon: () => null, // leave blank for now
+        title: 'Home Screen',
+        tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+          <Ionicons name="home" color={color} size={size} />
+        ), 
       },
     },
-    Updates: {
-      screen: Updates,
+    AI: {
+      screen: AI,
       options: {
-        tabBarIcon: () => null, // leave blank for now
-      },
-    },
-    Profile: {
-      screen: Profile,
-      options: {
-        tabBarIcon: () => null, // leave blank for now
+        tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+          <Ionicons name="document" color={color} size={size} />
+        ), 
       },
     },
     Settings: {
       screen: Settings,
       options: {
-        tabBarIcon: () => null, // leave blank for now
+        tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+          <Ionicons name="settings" color={color} size={size} />
+        ), 
+      },
+    },
+    Profile: {
+      screen: Profile,
+      options: {
+        tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+          <Ionicons name="person-circle" color={color} size={size} />
+        ), 
       },
     },
   },

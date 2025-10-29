@@ -1,13 +1,14 @@
-import { Text } from '@react-navigation/elements';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text, Switch } from 'react-native';
 import * as React from 'react';
-import { NameContext } from './Home';
+import { useContext } from 'react';
+import { ThemeContext, NameContext } from '../../contexts';
 
 export function Profile() {
+  const { isDark } = useContext(ThemeContext);
   const { name } = React.useContext(NameContext);
   return (
     <View style={styles.container}>
-      <Text>{name ? `${name}'s Profile` : 'No user set'}</Text>
+      <Text style={[styles.label, { color: isDark ? '#fff' : '#000' }]}>{name ? `${name}'s Profile` : 'No user set'}</Text>
     </View>
   );
 }
@@ -18,5 +19,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 10,
+  },
+  label: {
+    fontSize: 18,
+    marginBottom: 12,
   },
 });

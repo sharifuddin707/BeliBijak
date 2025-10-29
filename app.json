@@ -1,13 +1,13 @@
 {
   "expo": {
     "name": "BeliBijak",
-    "slug": "BeliBijak",
+    "slug": "beliBijak",
+    "scheme": "belibijak",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/belibijakicon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "scheme": "belibijak",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.belibijak"
