@@ -1,0 +1,22 @@
+{
+  "items": [
+    "Cooking Oil (2L)",
+    "Toothpaste",
+    "Banana (1kg)",
+    "Sugar (1kg)",
+    "Chicken (Whole)",
+    "Rice (5kg)",
+    "Apple",
+    "Bread",
+    "Milk",
+    "Eggs (12 pcs)"
+  ],
+  "stores": [
+    "SKH",
+    "Supasave",
+    "Hua Ho"
+  ],
+  "numItems": 10,
+  "numStores": 3,
+  "featureLen": 13
+}
